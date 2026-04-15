@@ -11,7 +11,9 @@ export default function NavigationPanel({ zones }) {
 
     const fetchNav = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/intelligence`);
+        // Remove trailing slash and add /intelligence
+        const baseUrl = API_BASE.replace(/\/$/, '');
+        const res = await axios.get(`${baseUrl}/intelligence`);
         if (res.data && res.data.data) {
           setNavData(res.data.data.navigation || []);
         }
