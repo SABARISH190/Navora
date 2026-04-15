@@ -73,10 +73,12 @@ export const AppProvider = ({ children }) => {
 
     const { default: axios } = await import('axios');
     const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8001";
+    // Remove trailing slash to avoid double slashes
+    const baseUrl = API_BASE.replace(/\/$/, '');
 
     for (const action of queue) {
       try {
-        await axios.post(`${API_BASE}${action.endpoint}`, action.payload);
+        await axios.post(`${baseUrl}${action.endpoint}`, action.payload);
       } catch (err) {
         console.error("Sync failed for action:", action, err);
         return; // Stop on first failure, retry later
