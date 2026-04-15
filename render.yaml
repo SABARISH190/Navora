@@ -15,11 +15,10 @@ services:
         value: simulation
 
   # Frontend Service
-  - type: web
+  - type: staticsite
     name: navora-frontend
-    runtime: static
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishDir: frontend/dist
+    publishDir: frontend/dist
     plan: free
     region: oregon
     envVars:
