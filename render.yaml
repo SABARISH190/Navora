@@ -14,12 +14,12 @@ services:
       - key: MODE
         value: simulation
 
-  # Frontend Service
-  - type: static
+  # Frontend Service (FIXED)
+  - type: web
     name: navora-frontend
-    runtime: node
+    env: node
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
+    startCommand: npx serve -s frontend/dist -l 10000
     plan: free
     region: oregon
     envVars:
