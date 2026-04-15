@@ -4,7 +4,7 @@ import { switchMode } from '../services/api';
 import navoraLogo from '../assets/navora-logo.png';
 
 export default function Navbar({ isConnected }) {
-  const { mode, isOnline, role, setRole, syncPending } = useContext(AppContext);
+  const { mode, isOnline, role, setRole, syncPending, setMode } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
 
   const handleModeSwitch = async (newMode) => {
@@ -12,8 +12,11 @@ export default function Navbar({ isConnected }) {
     setLoading(true);
     try {
       await switchMode(newMode);
+      // Update local state immediately after successful API call
+      setMode(newMode);
+      localStorage.setItem("navoraMode", newMode);
     } catch (err) {
-      console.error(err);
+      console.error("Mode switch failed:", err);
     } finally {
       setLoading(false);
     }
