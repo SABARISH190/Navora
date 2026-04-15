@@ -19,7 +19,7 @@ services:
     name: navora-frontend
     env: node
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: npx serve -s frontend/dist -l 10000 --no-clipboard
+    startCommand: npx http-server frontend/dist -p 10000 -c-1 --cors
     plan: free
     region: oregon
     envVars:
