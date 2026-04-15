@@ -72,13 +72,11 @@ export const AppProvider = ({ children }) => {
     if (queue.length === 0) return;
 
     const { default: axios } = await import('axios');
-    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8001";
-    // Remove trailing slash to avoid double slashes
-    const baseUrl = API_BASE.replace(/\/$/, '');
+    const API_BASE = "http://localhost:8001";
 
     for (const action of queue) {
       try {
-        await axios.post(`${baseUrl}${action.endpoint}`, action.payload);
+        await axios.post(`${API_BASE}${action.endpoint}`, action.payload);
       } catch (err) {
         console.error("Sync failed for action:", action, err);
         return; // Stop on first failure, retry later
@@ -172,7 +170,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider value={{
       zones, history, decision, mode, isConnected, predictions,
-      isOnline, role, setRole, syncPending, queueAction, setMode
+      isOnline, role, setRole, syncPending, queueAction
     }}>
       {children}
     </AppContext.Provider>

@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { switchMode } from '../services/api';
-import navoraLogo from '../assets/navora-logo.png';
 
 export default function Navbar({ isConnected }) {
-  const { mode, isOnline, role, setRole, syncPending, setMode } = useContext(AppContext);
+  const { mode, isOnline, role, setRole, syncPending } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
 
   const handleModeSwitch = async (newMode) => {
@@ -12,11 +11,8 @@ export default function Navbar({ isConnected }) {
     setLoading(true);
     try {
       await switchMode(newMode);
-      // Update local state immediately after successful API call
-      setMode(newMode);
-      localStorage.setItem("navoraMode", newMode);
     } catch (err) {
-      console.error("Mode switch failed:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -49,7 +45,7 @@ export default function Navbar({ isConnected }) {
       gap: '0.5rem',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <img src={navoraLogo} alt="Navora Logo" height="36" />
+        <img src="/src/assets/navora-logo.png" alt="Navora Logo" height="36" />
         <h1 className="nav-title" style={{ margin: 0, fontSize: '1.4rem', fontWeight: 'bold', letterSpacing: '1px' }}>Navora</h1>
         <span key={mode} style={{
           background: badgeColor,

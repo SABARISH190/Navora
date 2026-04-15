@@ -1,39 +1,47 @@
 export const connectSocket = (onMessage, onConnect, onDisconnect) => {
-  let pollingInterval = null;
-  
-  // Use polling by default for better compatibility with Render.com
-  const startPolling = (onMessage) => {
-    if (pollingInterval) return;
-    
-    console.log("Starting polling mode for real-time updates");
-    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
-    
-    const poll = async () => {
+  let socket = null;
+  let retryTimer = null;
+
+  const connect = () => {
+    if (socket && socket.readyState !== WebSocket.CLOSED) return;
+
+    socket = new WebSocket("ws://localhost:8001/ws");
+
+    socket.onopen = () => {
+      console.log("WebSocket Connected");
+      if (onConnect) onConnect();
+    };
+
+    socket.onmessage = (event) => {
       try {
-        // Remove trailing slash and add /state
-        const baseUrl = API_URL.replace(/\/$/, '');
-        const response = await fetch(`${baseUrl}/state`);
-        const data = await response.json();
-        if (data.data && onMessage) {
-          onMessage({ type: "state_update", data: data.data, timestamp: Date.now() / 1000 });
-        }
+        const data = JSON.parse(event.data);
+        if (onMessage) onMessage(data);
       } catch (err) {
-        console.error("Polling error:", err);
+        console.error("Failed to parse websocket message", err);
       }
     };
 
-    poll(); // Initial poll
-    pollingInterval = setInterval(poll, 5000); // Poll every 5 seconds
+    socket.onclose = () => {
+      console.log("WebSocket Disconnected. Reconnecting in 3s...");
+      if (onDisconnect) onDisconnect();
+      retryTimer = setTimeout(connect, 3000);
+    };
     
-    // Simulate connection callback
-    if (onConnect) onConnect();
+    socket.onerror = (err) => {
+      console.error("WebSocket Error:", err);
+      socket.close();
+    };
   };
 
-  startPolling(onMessage);
+  connect();
 
   return {
     close: () => {
-      if (pollingInterval) clearInterval(pollingInterval);
+      if (retryTimer) clearTimeout(retryTimer);
+      if (socket) {
+        socket.onclose = null; // Prevent reconnect
+        socket.close();
+      }
     }
   };
 };

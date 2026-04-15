@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8001";
+const API_BASE = "http://localhost:8001";
 
 export default function NavigationPanel({ zones }) {
   const [navData, setNavData] = useState([]);
@@ -11,9 +11,7 @@ export default function NavigationPanel({ zones }) {
 
     const fetchNav = async () => {
       try {
-        // Remove trailing slash and add /intelligence
-        const baseUrl = API_BASE.replace(/\/$/, '');
-        const res = await axios.get(`${baseUrl}/intelligence`);
+        const res = await axios.get(`${API_BASE}/intelligence`);
         if (res.data && res.data.data) {
           setNavData(res.data.data.navigation || []);
         }
