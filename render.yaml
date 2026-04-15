@@ -15,7 +15,7 @@ services:
         value: simulation
 
   # Frontend Service
-  - type: web
+  - type: static
     name: navora-frontend
     runtime: node
     buildCommand: cd frontend && npm install && npm run build
