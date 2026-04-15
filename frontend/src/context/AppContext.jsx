@@ -172,7 +172,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider value={{
       zones, history, decision, mode, isConnected, predictions,
-      isOnline, role, setRole, syncPending, queueAction
+      isOnline, role, setRole, syncPending, queueAction, setMode
     }}>
       {children}
     </AppContext.Provider>
