@@ -10,7 +10,9 @@ export const connectSocket = (onMessage, onConnect, onDisconnect) => {
     
     const poll = async () => {
       try {
-        const response = await fetch(`${API_URL}/state`);
+        // Remove trailing slash and add /state
+        const baseUrl = API_URL.replace(/\/$/, '');
+        const response = await fetch(`${baseUrl}/state`);
         const data = await response.json();
         if (data.data && onMessage) {
           onMessage({ type: "state_update", data: data.data, timestamp: Date.now() / 1000 });
