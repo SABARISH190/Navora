@@ -72,7 +72,7 @@ export const AppProvider = ({ children }) => {
     if (queue.length === 0) return;
 
     const { default: axios } = await import('axios');
-    const API_BASE = "http://localhost:8001";
+    const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
     for (const action of queue) {
       try {
