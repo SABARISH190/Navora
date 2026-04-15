@@ -19,7 +19,7 @@ services:
     name: navora-frontend
     runtime: static
     buildCommand: cd frontend && npm install && npm run build
-    publishDir: frontend/dist
+    staticPublishDir: frontend/dist
     plan: free
     region: oregon
     envVars:
