@@ -5,7 +5,9 @@ export const connectSocket = (onMessage, onConnect, onDisconnect) => {
   const connect = () => {
     if (socket && socket.readyState !== WebSocket.CLOSED) return;
 
-    socket = new WebSocket("ws://localhost:8001/ws");
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+    const wsUrl = API_URL.replace("http://", "ws://").replace("https://", "wss://");
+    socket = new WebSocket(`${wsUrl}/ws`);
 
     socket.onopen = () => {
       console.log("WebSocket Connected");

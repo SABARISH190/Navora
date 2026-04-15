@@ -14,14 +14,17 @@ services:
       - key: MODE
         value: simulation
 
-  # Frontend Service (FIXED)
+  # Frontend Service
   - type: web
     name: navora-frontend
     env: node
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: npx serve -s frontend/dist -l 10000
+    startCommand: npx serve -s frontend/dist -l 10000 --no-clipboard
     plan: free
     region: oregon
     envVars:
       - key: VITE_API_URL
-        value: https://navora-backend.onrender.com
+        fromService:
+          type: web
+          name: navora-backend
+          property: url
