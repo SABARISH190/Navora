@@ -1,0 +1,30 @@
+services:
+  # Backend Service
+  - type: web
+    name: navora-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: MODE
+        value: simulation
+
+  # Frontend Service
+  - type: web
+    name: navora-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/dist
+    plan: free
+    region: oregon
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: navora-backend
+          property: url
